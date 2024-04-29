@@ -6,17 +6,35 @@
 
 <body>
 
-    値
+
+    角度
     <input type="range" min="0" max="360" step="1" id="val_0" value="0">
-    <input type="number" min="0" max="360" step="1" size=2 id="num_0" value="0">
+    <input type="number" min="0" max="360" step="1" size=2 id="num_0" value="0"><br>
+    
+    <style>
+        select{
+          width: 200px;
+        }
+    </style>
+    <select name="list item" size="10" id="item_list">
+
+    </select>
+    <input type="button" value="追加" id="123">
+
     <div id="myDiv"><!-- ここにグラフを表示する --></div>
 
     <script>
 
         let p_rect_coord = [[-1, 1, 1, -1, -1],[-1, -1, 1, 1, -1]];
+        let arrow_len = 1.5
         let p_sig1_coord = [[1,0],[1.5,0]];
-        let p_sig2_coord = [[1,0],[1.5,0]];
-        let p_tau_coord = [[1,0],[1.5,0]];
+        let p_sig3_coord = [[0,1],[0,1.5]];
+        let p_sig1_r_coord = [[1,0],[1.5,0]];
+        let p_sig3_r_coord = [[0,1],[0,1.5]];
+        let p_tau_coord1 = [[1,0],[1.5,0]];
+        let p_tau_coord2 = [[1,0],[1.5,0]];
+        let p_tau_coord3 = [[1,0],[1.5,0]];
+        let p_tau_coord4 = [[1,0],[1.5,0]];
         var p_rot = 0;
 
         plot();
@@ -35,6 +53,8 @@
             var trace2 = {
             x: [2, 3, 4, 5],
             y: [16, 5, 11, 9],
+            xaxis: 'x2',
+            yaxis: 'y2',
             mode: 'lines',
             type: 'scatter'
             };
@@ -46,26 +66,46 @@
             type: 'scatter'
             };
 
-            var data = [trace1];
+            var data = [trace1, trace2];
 
             var layout = {
             hovermode:'closest',
             autosize: false, 
-            width:500, 
-            height:400, 
+            width:600, 
+            height:900, 
+            grid: {rows: 2, columns: 1},
+            legend:false,
             xaxis: {
-                range:[-2, 2],
+                range:[-3.5, 3.5],
                 dtick:1,
                 showgrid:false,
                 zeroline:false,
+                visible:false,
             },
             yaxis:{
-                range:[-2, 2],
+                range:[-3.5, 3.5],
                 dtick:1,
                 showgrid:false,
                 zeroline:false,
                 scaleanchor: 'x',
                 scaleratio:1,
+                visible:false,
+            },
+            xaxis2: {
+                range:[-2, 2],
+                dtick:1,
+                showgrid:true,
+                zeroline:true,
+                visible:true,
+            },
+            yaxis2:{
+                range:[-2, 2],
+                dtick:1,
+                showgrid:true,
+                zeroline:true,
+                scaleanchor: 'x2',
+                scaleratio:1,
+                visible:true,
             },
             annotations:[{
                 text:"sig1",
@@ -78,6 +118,70 @@
                 y:p_sig1_coord[0][1],
                 ax:p_sig1_coord[1][0],
                 ay:p_sig1_coord[1][1],
+                arrowhead:2,
+                arrowsize:2,
+                arrowside:"end",
+                arrowcolor:"red",
+            },
+            {
+                text:"sig3",
+                showarrow:true,
+                borderpad:4,
+                borderwidth:2,
+                axref:"x",
+                ayref:"y",
+                x:p_sig3_coord[0][0], 
+                y:p_sig3_coord[0][1],
+                ax:p_sig3_coord[1][0],
+                ay:p_sig3_coord[1][1],
+                arrowhead:2,
+                arrowsize:2,
+                arrowside:"end",
+                arrowcolor:"red",
+            },
+            {
+                text:"sig1_r",
+                showarrow:true,
+                borderpad:4,
+                borderwidth:2,
+                axref:"x",
+                ayref:"y",
+                x:p_sig1_r_coord[0][0], 
+                y:p_sig1_r_coord[0][1],
+                ax:p_sig1_r_coord[1][0],
+                ay:p_sig1_r_coord[1][1],
+                arrowhead:2,
+                arrowsize:2,
+                arrowside:"end",
+                arrowcolor:"red",
+            },
+            {
+                text:"sig3_r",
+                showarrow:true,
+                borderpad:4,
+                borderwidth:2,
+                axref:"x",
+                ayref:"y",
+                x:p_sig3_r_coord[0][0], 
+                y:p_sig3_r_coord[0][1],
+                ax:p_sig3_r_coord[1][0],
+                ay:p_sig3_r_coord[1][1],
+                arrowhead:2,
+                arrowsize:2,
+                arrowside:"end",
+                arrowcolor:"red",
+            },
+            {
+                text:"tau1_r",
+                showarrow:true,
+                borderpad:4,
+                borderwidth:2,
+                axref:"x",
+                ayref:"y",
+                x:p_tau_coord1[0][0], 
+                y:p_tau_coord1[0][1],
+                ax:p_tau_coord1[1][0],
+                ay:p_tau_coord1[1][1],
                 arrowhead:2,
                 arrowsize:2,
                 arrowside:"end",
@@ -99,6 +203,7 @@
         e_slider.addEventListener('input', set_slider);
         let e_num = document.getElementById("num_0");
         e_num.addEventListener('input',set_num);
+        
 
         function set_slider(event){
             e_num.value = e_slider.value;
@@ -115,7 +220,9 @@
         function rot_rect(ang){
             var set_ang = ang * Math.PI / 180.0;
             var rect_coord = [[-1, 1, 1, -1, -1],[-1, -1, 1, 1, -1]];
-            var sig1_coord = [[1,0],[2.5,0]];
+            var sig1_coord = [[1.2,0],[3.2,0]];
+            var sig3_coord = [[0,1.2],[0,3.2]];
+            var tau_coord = [[1.1,1],[1.1,-1]];
             console.log(set_ang);
             for (i=0; i<rect_coord[0].length; i++ ){
                 p_rect_coord[0][i] = rect_coord[0][i] * Math.cos(set_ang) - rect_coord[1][i] * Math.sin(set_ang);
@@ -125,6 +232,26 @@
             p_sig1_coord[0][1]=sig1_coord[0][0] * Math.sin(set_ang) + sig1_coord[0][1] * Math.cos(set_ang);
             p_sig1_coord[1][0]=sig1_coord[1][0] * Math.cos(set_ang) - sig1_coord[1][1] * Math.sin(set_ang);
             p_sig1_coord[1][1]=sig1_coord[1][0] * Math.sin(set_ang) + sig1_coord[1][1] * Math.cos(set_ang);
+
+            p_sig3_coord[0][0]=sig3_coord[0][0] * Math.cos(set_ang) - sig3_coord[0][1] * Math.sin(set_ang);
+            p_sig3_coord[0][1]=sig3_coord[0][0] * Math.sin(set_ang) + sig3_coord[0][1] * Math.cos(set_ang);
+            p_sig3_coord[1][0]=sig3_coord[1][0] * Math.cos(set_ang) - sig3_coord[1][1] * Math.sin(set_ang);
+            p_sig3_coord[1][1]=sig3_coord[1][0] * Math.sin(set_ang) + sig3_coord[1][1] * Math.cos(set_ang);
+        
+            p_sig1_r_coord[0][0]=sig1_coord[0][0] * Math.cos(set_ang + 180 * Math.PI / 180.0) - sig1_coord[0][1] * Math.sin(set_ang + 180 * Math.PI / 180.0);
+            p_sig1_r_coord[0][1]=sig1_coord[0][0] * Math.sin(set_ang + 180 * Math.PI / 180.0) + sig1_coord[0][1] * Math.cos(set_ang + 180 * Math.PI / 180.0);
+            p_sig1_r_coord[1][0]=sig1_coord[1][0] * Math.cos(set_ang + 180 * Math.PI / 180.0) - sig1_coord[1][1] * Math.sin(set_ang + 180 * Math.PI / 180.0);
+            p_sig1_r_coord[1][1]=sig1_coord[1][0] * Math.sin(set_ang + 180 * Math.PI / 180.0) + sig1_coord[1][1] * Math.cos(set_ang + 180 * Math.PI / 180.0);
+
+            p_sig3_r_coord[0][0]=sig3_coord[0][0] * Math.cos(set_ang + 180 * Math.PI / 180.0) - sig3_coord[0][1] * Math.sin(set_ang + 180 * Math.PI / 180.0);
+            p_sig3_r_coord[0][1]=sig3_coord[0][0] * Math.sin(set_ang + 180 * Math.PI / 180.0) + sig3_coord[0][1] * Math.cos(set_ang + 180 * Math.PI / 180.0);
+            p_sig3_r_coord[1][0]=sig3_coord[1][0] * Math.cos(set_ang + 180 * Math.PI / 180.0) - sig3_coord[1][1] * Math.sin(set_ang + 180 * Math.PI / 180.0);
+            p_sig3_r_coord[1][1]=sig3_coord[1][0] * Math.sin(set_ang + 180 * Math.PI / 180.0) + sig3_coord[1][1] * Math.cos(set_ang + 180 * Math.PI / 180.0);
+        
+            p_tau_coord1[0][0]=tau_coord[0][0] * Math.cos(set_ang) - tau_coord[0][1] * Math.sin(set_ang);
+            p_tau_coord1[0][1]=tau_coord[0][0] * Math.sin(set_ang) + tau_coord[0][1] * Math.cos(set_ang);
+            p_tau_coord1[1][0]=tau_coord[1][0] * Math.cos(set_ang) - tau_coord[1][1] * Math.sin(set_ang);
+            p_tau_coord1[1][1]=tau_coord[1][0] * Math.sin(set_ang) + tau_coord[1][1] * Math.cos(set_ang);
         }
     </script>
 
